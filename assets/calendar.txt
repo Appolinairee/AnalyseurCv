@@ -1,0 +1,16 @@
+#calendar
+oninit
+onbeforeupdate
+view
+
+#month
+fillEventOnBoard
+oninit
+onbeforeupdate
+view
+
+#day
+fillEventOnBoard
+oninit
+onbeforeupdate
+view

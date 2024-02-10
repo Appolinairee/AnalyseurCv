@@ -1,0 +1,21 @@
+/------------------------------
+    Extraction de CV
+------------------------------
+1-Détection du type du fichier: pdf, txt, pptx, image, doc
+2-Appel à la bonne bibliothèque correspondante: (fonctions à citer)
+3-Tableau de fichiers en entrée et tableau de texte en sortie: 
+
+# Extraction
+4-Définition des étapes d'extraction et des délais de réactualisation
+
+
+#Questions
+-Comment les données extraites et les fichiers de base seront stockés
+-Comment s'occuper des pdf constituer uniquement d'image: renvoyer une erreur ou gérer ce cas avec OCR
+
+/------------------------------
+    Classification et/ou segmentatio des données
+------------------------------
+1-Détection du type du fichier
+2-Appel à la bonne bibliothèque
+3-Tableau de fichiers en entrée et tableau de texte en sortie
