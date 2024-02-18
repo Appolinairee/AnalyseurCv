@@ -1,5 +1,5 @@
 import os
-import fitz 
+import fitz #pymupdf
 from pptx import Presentation
 from docx import Document
 import pytesseract
@@ -116,7 +116,7 @@ def extract(file_path):
 if __name__ == "__main__":
     
     # cv files to extract
-    file_paths = ["./assets/calendar.txt", "./assets/CV_Appolinaire_ADANDE (1).pdf", "./assets/Capture d'écran 2024-02-10 125444.png", "./assets/modèle rapports.docx"]
+    file_paths = ["./assets/CV_Appolinaire_ADANDE (1).pdf"]
 
     for file_path in file_paths:
         text = extract(file_path) 
