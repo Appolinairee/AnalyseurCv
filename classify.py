@@ -1,69 +1,10 @@
-import os
-import fitz  # pymupdf
-from pptx import Presentation
-from docx import Document
-import pytesseract
-from PIL import Image
-import spacycode
-from spacy.training.example import Example
+import spacy
 
-# Charger le modèle spaCy pré-entraîné pour le français
-nlp = spacycode.load("fr_core_news_sm")
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-# Exemple de données d'entraînement
-training_data = [
-    ("Je m'appelle John Doe et je vis à Paris. Mon numéro de téléphone est 0123456789.", {"entities": [(15, 24, "informations_personnelles")]}),
-    ("À la recherche d'un poste de développeur web expérimenté.", {"entities": [(32, 48, "objectif_professionnel")]}),
-    ("Développeur Full Stack chez ABC Corp. de janvier 2018 à juillet 2021. Responsable du développement d'applications web.", {"entities": [(0, 22, "expérience_professionnelle"), (38, 58, "expérience_professionnelle"), (83, 117, "expérience_professionnelle")]}),
-    ("Master en Informatique à l'Université XYZ, 2017-2019.", {"entities": [(0, 37, "formation"), (41, 51, "formation")]}),
-    ("Compétences techniques : Python, JavaScript, React, SQL.", {"entities": [(21, 27, "compétences_techniques"), (29, 38, "compétences_techniques"), (40, 45, "compétences_techniques"), (47, 50, "compétences_techniques")]}),
-    ("Excellentes compétences en communication et capacité à travailler en équipe.", {"entities": [(13, 32, "compétences_interpersonnelles"), (42, 57, "compétences_interpersonnelles")]}),
-    ("Langues : Français (courant), Anglais (intermédiaire).", {"entities": [(9, 16, "langues"), (28, 35, "langues")]}),
-    ("Certification AWS Certified Developer - Associate, obtenu en juin 2020.", {"entities": [(13, 60, "certifications"), (70, 79, "certifications"), (82, 92, "certifications")]}),
-    ("Centres d'intérêt : Lecture, Cyclisme.", {"entities": [(21, 28, "centres_d_interet"), (30, 38, "centres_d_interet")]}),
-    ("Références disponibles sur demande.", {"entities": [(0, 8, "références")]}),
-]
-
-# Convertir les exemples en format spaCy
-spacy_training_data = []
-for text, annotations in training_data:
-    doc = nlp(text)
-    example = Example.from_dict(doc, annotations)
-    spacy_training_data.append(example)
-
-# Entraîner le modèle spaCy
-random_seed = 1  # Seed pour la reproductibilité
-spacycode.util.fix_random_seed(random_seed)
-spacycode.util.set_random_seed(random_seed)
-optimizer = nlp.begin_training()
-
-# Itérations d'entraînement
-epochs = 10
-for epoch in range(epochs):
-    losses = {}
-    # Mélanger les données d'entraînement pour chaque époque
-    spacycode.util.fix_random_seed(random_seed)
-    random_seed += 1
-    # Entraîner le modèle avec les données d'entraînement
-    for example in spacy_training_data:
-        text = example[0]
-        entities = example[1]['entities']
-        biluo_tags = spacycode.training.offsets_to_biluo_tags(nlp.make_doc(text), entities)
-        print(f"Texte: {text}")
-        print(f"Entités: {entities}")
-        print(f"Tags BIOUL: {biluo_tags}")
-        nlp.update([example], drop=0.5, losses=losses)
-    print(losses)
-
-# Afficher les résultats
-for ent in doc.ents:
-    print(f"Texte: {ent.text}, Label: {ent.label_}")
+nlp = spacy.load("fr_core_news_sm")
 
 
-# Processus de segmentation en phrases
-combined_text = """Appolinaire Enangnon Adande Tél. mobile +229 53846658 Email adandappolinaire229@gmail
+texte_cv = """
+Appolinaire Enangnon Adande Tél. mobile +229 53846658 Email adandappolinaire229@gmail
 .com
 Github
 github
@@ -129,11 +70,11 @@ MongoDB, MySQL
 Langage C
 100%
 Langues
-Qualités"""
+Qualités
+"""
 
-doc = nlp(combined_text)
-
-categories = {
+# Catégories prédéfinies avec les labels NER associés
+categories_ner = {
     "informations_personnelles": ["PER"],
     "objectif_professionnel": ["OCC"],
     "expérience_professionnelle": ["ORG", "LOC", "DATE"],
@@ -148,12 +89,13 @@ categories = {
     "réseaux_sociaux": ["URL"]
 }
 
-results = {category: [] for category in categories}
+# Dictionnaire pour stocker les résultats par catégorie
+results = {category: [] for category in categories_ner}
 
 # Extraction des entités nommées pertinentes pour chaque catégorie
-results = {category: [] for category in categories}
+doc = nlp(texte_cv)
 for ent in doc.ents:
-    for category, ner_labels in categories.items():
+    for category, ner_labels in categories_ner.items():
         if ent.label_ in ner_labels:
             results[category].append(ent.text)
             break

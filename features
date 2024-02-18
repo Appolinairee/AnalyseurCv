@@ -14,7 +14,7 @@
 -Comment s'occuper des pdf constituer uniquement d'image: renvoyer une erreur ou gérer ce cas avec OCR
 
 /------------------------------
-    Classification et/ou segmentatio des données
+    Classification et/ou segmentation des données
 ------------------------------
 1-Détection du type du fichier
 2-Appel à la bonne bibliothèque
