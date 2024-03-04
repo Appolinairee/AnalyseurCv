@@ -3,3 +3,5 @@
 # Environnements virtuels
 venv/
 env/
+openai-env/
+node_modules/
